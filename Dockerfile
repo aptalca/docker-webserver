@@ -35,5 +35,7 @@ usermod -d /home nobody && \
 chown -R nobody:users /home
 
 ADD firstrun.sh /etc/my_init.d/firstrun.sh
+ADD services/ /etc/service/
+ADD defaults/ /defaults/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
