@@ -33,9 +33,17 @@ if [ ! -d "/config/letsencrypt" ]; then
   git clone https://github.com/letsencrypt/letsencrypt
 fi
 
-cd letsencrypt
+if [ ! -d "/config/etc/letsencrypt" ]; then
+  mkdir -p /config/etc/letsencrypt
+  if [ -d "/etc/letsencrypt" ]; then
+    cp -R /etc/letsencrypt/* /config/etc/letsencrypt/
+  fi
+fi
+rm -R /etc/letsencrypt
+ln -s /config/etc/letsencrypt /etc/letsencrypt
+
+cd /config/letsencrypt
 git pull
-sudo service nginx stop
-./letsencrypt-auto certonly --standalone --email "$EMAIL" --agree-tos -d "$URL"
+./letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL"
 chown -R nobody:users /config
-sudo service nginx start
+service nginx start
