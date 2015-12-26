@@ -41,6 +41,7 @@ if [ ! -d "/config/etc/letsencrypt" ]; then
 fi
 rm -R /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
+ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 
 cd /config/letsencrypt
 git pull
