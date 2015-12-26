@@ -39,4 +39,6 @@ ADD services/ /etc/service/
 ADD defaults/ /defaults/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
+chmod +x /defaults/letsencrypt.sh && \
+crontab /defaults/letsencryptcron.conf && \
 update-rc.d -f nginx remove
