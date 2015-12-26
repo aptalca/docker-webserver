@@ -8,7 +8,7 @@ if [[ $(cat /etc/timezone) != $TZ ]] ; then
   sed -i -e "s#;date.timezone.*#date.timezone = ${TZ}#g" /etc/php5/cli/php.ini
 fi
 
-mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/keys
+mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/etc/letsencrypt
 
 if [ ! -f "/config/nginx/nginx.conf" ]; then
   echo "Copying the default nginx.conf"
@@ -46,11 +46,10 @@ if [ ! -d "/config/letsencrypt" ]; then
   echo "Setting up letsencrypt for the first time"
   git clone https://github.com/letsencrypt/letsencrypt
 else
-  echo "Using existing letsencrypt"
+  echo "Using existing letsencrypt installation"
 fi
 
-mkdir -p /config/etc/letsencrypt
-rm -R /etc/letsencrypt
+rm -r /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
 ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
@@ -58,13 +57,12 @@ ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
   openssl dhparam -out /config/nginx/dhparams.pem 2048
-  echo "DH pramaeters successfully created"
+  echo "DH parameters successfully created"
 else
   echo "Using existing DH parameters"
 fi
 
 cd /config/letsencrypt
-git pull
 ./letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL"
 chown -R nobody:users /config
 service nginx start
