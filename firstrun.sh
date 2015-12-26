@@ -24,4 +24,11 @@ if [[ $(find /config/www -type f | wc -l) -eq 0 ]]; then
 cp /defaults/index.html /config/www/index.html
 fi
 cp /config/nginx/nginx-fpm.conf /etc/php5/fpm/pool.d/www.conf
+
+if [ ! -d "/config/letsencrypt" ]; then
+cd /config
+git clone https://github.com/letsencrypt/letsencrypt
+cd letsencrypt
+./letsencrypt-auto certonly --standalone --email "$EMAIL" --agree-tos -d "$URL"
+
 chown -R nobody:users /config
