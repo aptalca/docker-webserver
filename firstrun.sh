@@ -39,6 +39,8 @@ else
 fi
 
 cp /config/nginx/nginx-fpm.conf /etc/php5/fpm/pool.d/www.conf
+rm -f /etc/nginx/nginx.conf
+ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
 cd /config
 
