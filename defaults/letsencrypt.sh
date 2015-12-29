@@ -13,4 +13,5 @@ else
     echo "Existing certificate is still valid, skipping renewal."
   fi
 fi
+chown -R nobody:users /config
 service nginx start
