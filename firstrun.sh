@@ -65,4 +65,4 @@ else
 fi
 
 chown -R nobody:users /config
-/defaults/letsencrypt.sh > /config/log/nginx/letsencrypt.log 2>&1
+/defaults/letsencrypt.sh
