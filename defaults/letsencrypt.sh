@@ -10,7 +10,7 @@ else
     echo "Renewing certificate that is older than 60 days"
     /config/letsencrypt/letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL"
   else
-    echo "Existing certificate is still valid, skipping renewal."
+    echo "Existing certificate is still valid and is only $diff days old, skipping renewal."
   fi
 fi
 chown -R nobody:users /config
