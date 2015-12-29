@@ -5,7 +5,6 @@ if [ ! -f "/config/keys/fullchain.pem" ]; then
   service nginx stop
   /config/letsencrypt/letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL"
   chown -R nobody:users /config
-  service nginx start
 else
   diff=$(( (`date +%s` - `stat -c "%Y" /config/keys/fullchain.pem`) / 86400 ))
   if [[ $diff > 60 ]]; then
@@ -13,8 +12,8 @@ else
     service nginx stop
     /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL"
     chown -R nobody:users /config
-    service nginx start
   else
     echo "Existing certificate is still valid and is only $diff day(s) old; skipping renewal."
   fi
 fi
+service nginx start
