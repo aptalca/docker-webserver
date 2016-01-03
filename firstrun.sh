@@ -62,6 +62,8 @@ if [ ! -z $SUBDOMAINS ]; then
     export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
   echo "Sub-domains processed are:" $SUBDOMAINS2
+else
+  echo "No subdomains defined"
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
