@@ -56,6 +56,16 @@ ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
 ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 
+if [ ! -z $SUBDOMAINS ]; then
+  echo "SUBDOMAINS entered, processing"
+  for job in $(echo $SUBDOMAINS | tr "," " "); do
+    export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
+  done
+  echo "Sub-domains processed are:" $SUBDOMAINS2
+else
+  echo "No subdomains defined"
+fi
+
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
   openssl dhparam -out /config/nginx/dhparams.pem 2048
