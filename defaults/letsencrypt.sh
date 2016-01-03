@@ -7,8 +7,10 @@ if [ ! -f "/config/keys/fullchain.pem" ]; then
     for job in $(echo $SUBDOMAINS | tr "," " "); do
       export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
     done
+    /config/letsencrypt/letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+  else
+    /config/letsencrypt/letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL
   fi
-  /config/letsencrypt/letsencrypt-auto certonly --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
   chown -R nobody:users /config
 else
   diff=$(( (`date +%s` - `stat -c "%Y" /config/keys/fullchain.pem`) / 86400 ))
@@ -19,8 +21,10 @@ else
       for job in $(echo $SUBDOMAINS | tr "," " "); do
         export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
       done
+      /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+    else
+      /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL
     fi
-    /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
     chown -R nobody:users /config
   else
     echo "Existing certificate is still valid and is only $diff day(s) old; skipping renewal."
