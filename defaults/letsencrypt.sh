@@ -10,7 +10,7 @@ else
   if [[ $diff > 60 ]]; then
     echo "Renewing certificate that is older than 60 days"
     service nginx stop
-    /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL" "$SUBDOMAINS2"
+    /config/letsencrypt/letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email "$EMAIL" --agree-tos -d "$URL""$SUBDOMAINS2"
     chown -R nobody:users /config
   else
     echo "Existing certificate is still valid and is only $diff day(s) old; skipping renewal."
