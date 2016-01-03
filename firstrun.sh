@@ -59,7 +59,7 @@ ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 if [ ! -z $SUBDOMAINS ]; then
   echo "SUBDOMAINS entered, processing"
   for job in $(echo $SUBDOMAINS | tr "," " "); do
-    export SUBDOMAINS2=" -d "$job"."$URL" $SUBDOMAINS2"
+    export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
   echo "Sub-domains processed are:" $SUBDOMAINS2
 fi
