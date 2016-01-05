@@ -40,5 +40,6 @@ ADD defaults/ /defaults/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
+chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
 update-rc.d -f nginx remove
