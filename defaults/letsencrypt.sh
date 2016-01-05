@@ -14,7 +14,7 @@ if [ ! -f "/config/keys/fullchain.pem" ]; then
   chown -R nobody:users /config
 else
   diff=$(( (`date +%s` - `stat -c "%Y" /config/keys/fullchain.pem`) / 86400 ))
-  if [[ $diff > 60 ]]; then
+  if [[ $diff -gt 60 ]]; then
     echo "Renewing certificate that is older than 60 days"
     service nginx stop
     if [ ! -z $SUBDOMAINS ]; then
