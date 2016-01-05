@@ -26,6 +26,6 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
-- 2016-01-05 - Fixed permissions for php-fpm and memcached (they were not starting)
+- 2016-01-05 - Fixed permissions for php-fpm and memcached (they were not starting) - Fixed silly typo causing cert renewal every 6 days instead of 60
 - 2016-01-03 - Updated to support multiple subdomains
 - 2015-12-29 - Initial Release
