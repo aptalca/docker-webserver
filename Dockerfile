@@ -27,7 +27,8 @@ php5-cgi \
 php5-pgsql \
 php5-memcached \
 php5-sqlite \
-memcached && \
+memcached \
+fail2ban && \
 mkdir -p /etc/my_init.d && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
@@ -42,4 +43,5 @@ RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
 chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
-update-rc.d -f nginx remove
+update-rc.d -f nginx remove && \
+update-rc.d -f fail2ban remove
