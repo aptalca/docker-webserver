@@ -13,7 +13,7 @@ On unRaid, install from the Community Applications and enter the app folder loca
 
 On other platforms, you can run this docker with the following command:
 
-```docker run -d --name="Nginx-letsencrypt" -p 80:80 -p 443:443 -e EMAIL="youremail" -e URL="yourdomain.url" -e SUBDOMAINS="www,subdomain1,subdomain2" -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro aptalca/nginx-letsencrypt```
+```docker run -d --privileged --name="Nginx-letsencrypt" -p 80:80 -p 443:443 -e EMAIL="youremail" -e URL="yourdomain.url" -e SUBDOMAINS="www,subdomain1,subdomain2" -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro aptalca/nginx-letsencrypt```
 
 - Replace the EMAIL variable (youremail) with the e-mail address you would like to register the SSL certificate with.
 - Replace the URL variable (yourdomain.url) with your server's internet domain name, without any subdomains (can also be a dynamic dns url, ie. google.com or username.duckdns.org).
@@ -26,6 +26,7 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-01-15 - Added fail2ban support (Important: If updating from earlier, notice that a `--privileged` flag is added to the run command. Without it, fail2ban does not work due to inability to modify iptables)
 - 2016-01-05 - Fixed permissions for php-fpm and memcached (they were not starting) - Fixed silly typo causing cert renewal every 6 days instead of 60
 - 2016-01-03 - Updated to support multiple subdomains
 - 2015-12-29 - Initial Release
