@@ -21,6 +21,7 @@ On other platforms, you can run this docker with the following command:
 - Replace the "/path/to/config" with your choice of location.
 - Make sure that the port 443 in the container is accessible from the outside of your lan. It is OK to map container's port 443 to another port on the host (ie 943) as long as your router will forward port 443 from the outside to port 943 on the host and it will end up at port 443 in the container. If this is confusing, just leave the `-p 443:443` portion of the run command as is and forward port 443 on your router to your host IP.
 - Prior to SSL certificate creation, letsencrypt creates a temporary webserver and checks to see if it is accessible through the domain url provided for validation. Make sure that your server is reachable through your.domain.url:443 and that port 443 is forwarded on your router to the container's port 443 prior to running this docker. Otherwise letsencrypt validation will fail, and no certificates will be generated.
+- Fail2ban is extremely useful for preventing DDOS attacks or brute force methods that attempt to thwart htpasswd security. Default implementation includes blocking unsuccessful attempts at htpasswd based authentication. You can add more filters by modifying the `/config/nginx/jail.local` file and dropping the filter files in the `/config/nginx/fail2ban-filters` folder. Don't forget to restart the container afterwards.
 
   
 You can access your webserver at `https://subdomain.yourdomain.url/`  
