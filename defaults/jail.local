@@ -1,3 +1,8 @@
+# This is the custom version of the jail.conf for fail2ban
+# Feel free to modify this and add additional filters
+# Then you can drop the new filter conf files into the fail2ban-filters
+# folder and restart the container
+
 [DEFAULT]
 
 # "bantime" is the number of seconds that a host is banned.
