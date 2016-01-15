@@ -38,7 +38,23 @@ else
   echo "Using existing landing page"
 fi
 
+if [ ! -f "/config/nginx/jail.local" ]; then
+  echo "Copying the default jail.local"
+  cp /defaults/jail.local /config/nginx/jail.local
+else
+  echo "Using existing jail.local"
+fi
+
+if [ ! -d "/config/nginx/fail2ban-filters" ]; then
+  echo "Copying default fail2ban filters"
+  cp -R /defaults/fail2ban-filters /config/nginx/
+else
+  echo "Using existing fail2ban filters"
+fi
+
 cp /config/nginx/nginx-fpm.conf /etc/php5/fpm/pool.d/www.conf
+cp /config/nginx/jail.local /etc/fail2ban/jail.local
+cp /config/nginx/fail2ban-filters/* /etc/fail2ban/filter.d/
 rm -f /etc/nginx/nginx.conf
 ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
@@ -76,3 +92,5 @@ fi
 
 chown -R nobody:users /config
 /defaults/letsencrypt.sh
+
+service fail2ban restart
