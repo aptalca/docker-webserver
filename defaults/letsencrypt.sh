@@ -13,7 +13,7 @@ if [ -f "/config/keys/fullchain.pem" ]; then
 else
   echo "Generating server certificate for the first time"
 fi
-  
+
 for job in $(echo $SUBDOMAINS | tr "," " "); do
   export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
 done
