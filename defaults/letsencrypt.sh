@@ -8,16 +8,21 @@ if [ -f "/config/keys/fullchain.pem" ]; then
     echo "Existing certificate is still valid for another $DAYS_EXP day(s); skipping renewal."
     exit 0
   else
-    echo "Renewing certificate that is older than 60 days"
+    echo "Preparing to renew certificate that is older than 60 days"
   fi
 else
-  echo "Generating server certificate for the first time"
+  echo "Preparing to generate server certificate for the first time"
 fi
 
 for job in $(echo $SUBDOMAINS | tr "," " "); do
   export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
 done
 cd /config/letsencrypt
-./letsencrypt-auto certonly --renew-by-default --webroot -w /config/www/ --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
-echo "Reloading web server"
+echo "Updating letsencrypt"
+./letsencrypt-auto --help
+echo "Temporarily stopping Nginx"
+service nginx stop
+echo "Generating/Renewing certificate"
+./letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+echo "Restarting web server"
 service nginx reload
