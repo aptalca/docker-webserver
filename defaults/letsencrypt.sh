@@ -24,5 +24,6 @@ echo "Temporarily stopping Nginx"
 service nginx stop
 echo "Generating/Renewing certificate"
 ./letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+chown -R nobody:users /config
 echo "Restarting web server"
 service nginx start
