@@ -14,16 +14,27 @@ else
   echo "Preparing to generate server certificate for the first time"
 fi
 
-for job in $(echo $SUBDOMAINS | tr "," " "); do
-  export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
-done
+URLS = "-d $URL"
+
+if [ ! -z $SUBDOMAINS ]; then
+  for job in $(echo $SUBDOMAINS | tr "," " "); do
+    export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
+  done
+
+  if [ "$ONLY_SUBDOMAINS" = true ]; then
+    URLS="$SUBDOMAINS2"
+  else
+    URLS="-d $URL $SUBDOMAINS2"
+  fi
+fi
+
 cd /config/letsencrypt
 echo "Updating letsencrypt"
 ./letsencrypt-auto --help
 echo "Temporarily stopping Nginx"
 service nginx stop
 echo "Generating/Renewing certificate"
-./letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+./letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --email $EMAIL --agree-tos $URLS
 chown -R nobody:users /config
 echo "Restarting web server"
 service nginx start
