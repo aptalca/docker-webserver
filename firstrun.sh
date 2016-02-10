@@ -70,7 +70,13 @@ fi
 rm -r /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
-ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
+
+if [ "$ONLY_SUBDOMAINS" = true ]; then
+  SUBDOMAINURL="$(echo $SUBDOMAINS | tr ',' ' ' | awk '{print $1}')"."$URL"
+  ln -s /config/etc/letsencrypt/live/"$SUBDOMAINURL" /config/keys
+else
+  ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
+fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
