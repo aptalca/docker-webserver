@@ -27,6 +27,7 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-03-08 - Fixed issue with fail2ban not starting following container crash
 - 2016-01-15 - Added fail2ban support (Important: If updating from earlier, notice that a `--privileged` flag is added to the run command. Without it, fail2ban does not work due to inability to modify iptables)
 - 2016-01-05 - Fixed permissions for php-fpm and memcached (they were not starting) - Fixed silly typo causing cert renewal every 6 days instead of 60
 - 2016-01-03 - Updated to support multiple subdomains
