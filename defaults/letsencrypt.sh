@@ -1,5 +1,9 @@
 #!/bin/bash
 echo "cronjob running at "$(date)
+cd /defaults
+. domains.conf
+echo "URL is" $URL
+echo "Subdomains are" $SUBDOMAINS
 echo "updating letsencrypt dependencies; help info will be displayed, you can ignore that :-)"
 cd /config/letsencrypt
 ./letsencrypt-auto --help
@@ -16,7 +20,6 @@ if [ -f "/config/keys/fullchain.pem" ]; then
 else
   echo "Preparing to generate server certificate for the first time"
 fi
-
 echo "Temporarily stopping Nginx"
 service nginx stop
 echo "Generating/Renewing certificate"
