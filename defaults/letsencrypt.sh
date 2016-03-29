@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "cronjob running at "$(date)
-echo "updating letsencrypt dependencies"
+echo "updating letsencrypt dependencies; help info will be displayed, you can ignore that :-)"
 cd /config/letsencrypt
 ./letsencrypt-auto --help
 if [ -f "/config/keys/fullchain.pem" ]; then
