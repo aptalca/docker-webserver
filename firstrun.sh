@@ -96,4 +96,4 @@ chown -R nobody:users /config
 /defaults/letsencrypt.sh
 
 rm /var/run/fail2ban/fail2ban.sock
-service fail2ban restart
+service fail2ban start
