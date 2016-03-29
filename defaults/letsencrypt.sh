@@ -1,5 +1,8 @@
 #!/bin/bash
 echo "cronjob running at "$(date)
+echo "updating letsencrypt dependencies"
+cd /config/letsencrypt
+./letsencrypt-auto --help
 if [ -f "/config/keys/fullchain.pem" ]; then
   EXP=$(date -d "`openssl x509 -in /config/keys/fullchain.pem -text -noout|grep "Not After"|cut -c 25-`" +%s)
   DATENOW=$(date -d "now" +%s)
@@ -14,12 +17,6 @@ else
   echo "Preparing to generate server certificate for the first time"
 fi
 
-for job in $(echo $SUBDOMAINS | tr "," " "); do
-  export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
-done
-cd /config/letsencrypt
-echo "Updating letsencrypt"
-./letsencrypt-auto --help
 echo "Temporarily stopping Nginx"
 service nginx stop
 echo "Generating/Renewing certificate"
