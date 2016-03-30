@@ -27,6 +27,7 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-03-29 - Quick fix for nginx not starting
 - 2016-03-29 - IMPORTANT UPDATE, cron script has been fixed (wasn't getting the correct env variables), letsencrypt updates more frequently (infrequent updates could error and break cert updates), cron now runs everynight at midnight to check status and updates letsencrypt, letsencrypt log file gets appended with cron output for tracking update history
 - 2016-03-08 - Fixed issue with fail2ban not starting following container crash
 - 2016-01-15 - Added fail2ban support (Important: If updating from earlier, notice that a `--privileged` flag is added to the run command. Without it, fail2ban does not work due to inability to modify iptables)
