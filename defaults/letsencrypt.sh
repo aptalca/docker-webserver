@@ -4,8 +4,9 @@ cd /defaults
 . domains.conf
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
-echo "updating letsencrypt dependencies; help info will be displayed, you can ignore that :-)"
+echo "updating letsencrypt dependencies; help info may be displayed, you can ignore that :-)"
 cd /config/letsencrypt
+git pull
 ./letsencrypt-auto --help
 if [ -f "/config/keys/fullchain.pem" ]; then
   EXP=$(date -d "`openssl x509 -in /config/keys/fullchain.pem -text -noout|grep "Not After"|cut -c 25-`" +%s)
