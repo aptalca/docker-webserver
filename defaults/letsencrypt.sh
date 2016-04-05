@@ -1,12 +1,18 @@
 #!/bin/bash
+echo "<------------------------------------------------->"
+echo
+echo "<------------------------------------------------->"
 echo "cronjob running at "$(date)
 cd /defaults
 . domains.conf
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
-echo "updating letsencrypt dependencies; help info will be displayed, you can ignore that :-)"
+echo "updating letsencrypt from the git repo"
 cd /config/letsencrypt
+git pull
+echo "letting the script update itself; help info may be displayed, you can ignore that :-)"
 ./letsencrypt-auto --help
+echo "deciding whether to renew the cert(s)"
 if [ -f "/config/keys/fullchain.pem" ]; then
   EXP=$(date -d "`openssl x509 -in /config/keys/fullchain.pem -text -noout|grep "Not After"|cut -c 25-`" +%s)
   DATENOW=$(date -d "now" +%s)
