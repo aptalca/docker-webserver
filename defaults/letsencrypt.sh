@@ -5,6 +5,7 @@ echo "<------------------------------------------------->"
 echo "cronjob running at "$(date)
 cd /defaults
 . domains.conf
+cd /config/letsencrypt
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
 echo "letting the script update itself; help info may be displayed, you can ignore that :-)"
