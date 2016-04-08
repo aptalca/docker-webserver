@@ -7,9 +7,6 @@ cd /defaults
 . domains.conf
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
-echo "updating letsencrypt from the git repo"
-cd /config/letsencrypt
-git pull
 echo "letting the script update itself; help info may be displayed, you can ignore that :-)"
 ./letsencrypt-auto --help
 echo "deciding whether to renew the cert(s)"
