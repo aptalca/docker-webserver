@@ -28,6 +28,7 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-04-11 - Fixed the cron environment issue that could break script updates
 - 2016-04-08 - Fixed update bug (accidentally removed a line in previous update)
 - 2016-04-07 - Remove the git pull as the April 6th update of the auto script to ver 0.5.0 no longer needs it
 - 2016-04-05 - Add nightly git pull to prevent letsencrypt update errors
