@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export HOME="/root"
+
 if [[ $(cat /etc/timezone) != $TZ ]] ; then
   echo "Setting the correct time"
   echo "$TZ" > /etc/timezone
