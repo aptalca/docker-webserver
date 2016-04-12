@@ -83,6 +83,7 @@ if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "DH parameters successfully created"
 else
   echo "Using existing DH parameters"
+  echo "DHLEVEL is " $DHLEVEL
 fi
 
 chown -R nobody:users /config
