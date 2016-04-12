@@ -87,6 +87,7 @@ fi
 
 chown -R nobody:users /config
 /defaults/letsencrypt.sh
+service php5-fpm start
 service nginx start
 if [ -f "/var/run/fail2ban/fail2ban.sock" ]; then
   rm /var/run/fail2ban/fail2ban.sock
