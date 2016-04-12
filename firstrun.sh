@@ -60,15 +60,6 @@ cp /config/nginx/fail2ban-filters/* /etc/fail2ban/filter.d/
 rm -f /etc/nginx/nginx.conf
 ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
-cd /config
-
-if [ ! -d "/config/letsencrypt" ]; then
-  echo "Setting up letsencrypt for the first time"
-  git clone https://github.com/letsencrypt/letsencrypt
-else
-  echo "Using existing letsencrypt installation"
-fi
-
 rm -r /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
