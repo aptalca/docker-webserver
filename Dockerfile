@@ -47,4 +47,5 @@ chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
 /defaults/letsencrypt-auto -h && \
 update-rc.d -f nginx remove && \
+update-rc.d -f php5-fpm remove && \
 update-rc.d -f fail2ban remove
