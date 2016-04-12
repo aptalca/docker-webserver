@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export HOME="/root"
+
 if [[ $(cat /etc/timezone) != $TZ ]] ; then
   echo "Setting the correct time"
   echo "$TZ" > /etc/timezone
@@ -58,15 +60,6 @@ cp /config/nginx/fail2ban-filters/* /etc/fail2ban/filter.d/
 rm -f /etc/nginx/nginx.conf
 ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
-cd /config
-
-if [ ! -d "/config/letsencrypt" ]; then
-  echo "Setting up letsencrypt for the first time"
-  git clone https://github.com/letsencrypt/letsencrypt
-else
-  echo "Using existing letsencrypt installation"
-fi
-
 rm -r /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
@@ -78,22 +71,23 @@ if [ ! -z $SUBDOMAINS ]; then
     export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
   echo "Sub-domains processed are:" $SUBDOMAINS2
-  echo -e "SUBDOMAINS2=$SUBDOMAINS2 URL=$URL" > /defaults/domains.conf
+  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\"" > /defaults/domains.conf
 else
   echo "No subdomains defined"
-  echo -e "URL=$URL" > /defaults/domains.conf
+  echo -e "URL=\"$URL\"" > /defaults/domains.conf
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
-  openssl dhparam -out /config/nginx/dhparams.pem 2048
-  echo "DH parameters successfully created"
+  openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
+  echo "DH parameters successfully created - " $DHLEVEL "bits"
 else
   echo "Using existing DH parameters"
 fi
 
 chown -R nobody:users /config
 /defaults/letsencrypt.sh
+service php5-fpm start
 service nginx start
 if [ -f "/var/run/fail2ban/fail2ban.sock" ]; then
   rm /var/run/fail2ban/fail2ban.sock

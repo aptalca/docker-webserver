@@ -1,2 +1,0 @@
-#!/bin/bash
-exec /usr/sbin/php5-fpm -F -y /config/nginx/nginx-fpm.conf

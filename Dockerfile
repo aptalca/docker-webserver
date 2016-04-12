@@ -6,7 +6,7 @@ VOLUME ["/config"]
 
 EXPOSE 80 443
 
-ENV HOME="/root" LC_ALL="C.UTF-8" LANG="en_US.UTF-8" LANGUAGE="en_US.UTF-8"
+ENV HOME="/root" LC_ALL="C.UTF-8" LANG="en_US.UTF-8" LANGUAGE="en_US.UTF-8" DHLEVEL="2048"
 
 RUN export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive && \
 add-apt-repository ppa:nginx/stable && \
@@ -38,10 +38,14 @@ chown -R nobody:users /home
 ADD firstrun.sh /etc/my_init.d/firstrun.sh
 ADD services/ /etc/service/
 ADD defaults/ /defaults/
+ADD https://raw.githubusercontent.com/letsencrypt/letsencrypt/master/letsencrypt-auto /defaults/letsencrypt-auto
 
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
+chmod +x /defaults/letsencrypt-auto && \
 chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
+/defaults/letsencrypt-auto -h && \
 update-rc.d -f nginx remove && \
+update-rc.d -f php5-fpm remove && \
 update-rc.d -f fail2ban remove
