@@ -71,19 +71,18 @@ if [ ! -z $SUBDOMAINS ]; then
     export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
   echo "Sub-domains processed are:" $SUBDOMAINS2
-  echo -e "SUBDOMAINS2=$SUBDOMAINS2 URL=$URL" > /defaults/domains.conf
+  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\"" > /defaults/domains.conf
 else
   echo "No subdomains defined"
-  echo -e "URL=$URL" > /defaults/domains.conf
+  echo -e "URL=\"$URL\"" > /defaults/domains.conf
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
   openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
-  echo "DH parameters successfully created"
+  echo "DH parameters successfully created - " $DHLEVEL "bits"
 else
   echo "Using existing DH parameters"
-  echo "DHLEVEL is " $DHLEVEL
 fi
 
 chown -R nobody:users /config
