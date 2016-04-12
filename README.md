@@ -30,7 +30,7 @@ On other platforms, you can run this docker with the following command:
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
-- 2016-04-12 - Many changes under the hood to streamline - new/renewed certs will be 4096 bits - added option for 4096 bit dhparams - no more git, only uses the single letsencrypt-auto script - all environment variables match (bash, init and cron) - fixed bug affecting multiple subdomains
+- 2016-04-12 - Many changes under the hood to streamline - new/renewed certs will be 4096 bits - added option for 4096 bit dhparams - no more git, only uses the single letsencrypt-auto script - all environment variables match (bash, init and cron) - fixed bug affecting multiple subdomains - finally fixed php (may have to change your site config to use "fastcgi_pass unix:/var/run/php5-fpm.sock;" as in here: https://github.com/aptalca/docker-webserver/blob/master/defaults/default )
 - 2016-04-11 - Fixed the cron environment issue that could break script updates
 - 2016-04-08 - Fixed update bug (accidentally removed a line in previous update)
 - 2016-04-07 - Remove the git pull as the April 6th update of the auto script to ver 0.5.0 no longer needs it
