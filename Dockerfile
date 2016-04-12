@@ -34,9 +34,11 @@ mkdir -p /etc/my_init.d
 ADD firstrun.sh /etc/my_init.d/firstrun.sh
 ADD services/ /etc/service/
 ADD defaults/ /defaults/
+ADD https://raw.githubusercontent.com/letsencrypt/letsencrypt/master/letsencrypt-auto /defaults/letsencrypt-auto
 
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
+chmod +x /defaults/letsencrypt-auto && \
 chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
 update-rc.d -f nginx remove && \
