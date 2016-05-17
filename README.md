@@ -14,7 +14,19 @@ On unRaid, install from the Community Applications and enter the app folder loca
 
 On other platforms, you can run this docker with the following command:
 
-```docker run -d --privileged --name="Nginx-letsencrypt" -p 80:80 -p 443:443 -e EMAIL="youremail" -e URL="yourdomain.url" -e SUBDOMAINS="www,subdomain1,subdomain2" -e TZ="America/New_York" -v /path/to/config/:/config:rw aptalca/nginx-letsencrypt```
+```
+docker run -d \
+  --privileged \
+  --name="Nginx-letsencrypt" \
+  -p 80:80 \
+  -p 443:443 \
+  -e EMAIL="youremail" \
+  -e URL="yourdomain.url" \
+  -e SUBDOMAINS="www,subdomain1,subdomain2"  \
+  -e TZ="America/New_York" \
+  -v /path/to/config/:/config:rw \
+  aptalca/nginx-letsencrypt
+```
 
 - Replace the EMAIL variable (youremail) with the e-mail address you would like to register the SSL certificate with.
 - Replace the URL variable (yourdomain.url) with your server's internet domain name, without any subdomains (can also be a dynamic dns url, ie. google.com or username.duckdns.org).
