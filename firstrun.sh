@@ -77,6 +77,15 @@ else
   echo -e "URL=\"$URL\"" > /defaults/domains.conf
 fi
 
+if [ ! -f "/config/donoteditthisfile.conf" ]; then
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
+  echo "New sub/domains entered, processing"
+else
+  . /config/donoteditthisfile.conf
+  if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
+  echo "Different sub/domains entered. Revoking existing certificate, and an updated one will be created"
+  
+
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
   openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
