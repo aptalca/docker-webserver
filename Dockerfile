@@ -38,14 +38,14 @@ chown -R nobody:users /home
 ADD firstrun.sh /etc/my_init.d/firstrun.sh
 ADD services/ /etc/service/
 ADD defaults/ /defaults/
-ADD https://raw.githubusercontent.com/letsencrypt/letsencrypt/master/letsencrypt-auto /defaults/letsencrypt-auto
+ADD https://dl.eff.org/certbot-auto /defaults/certbot-auto
 
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
-chmod +x /defaults/letsencrypt-auto && \
+chmod +x /defaults/certbot-auto && \
 chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
-/defaults/letsencrypt-auto -h && \
+/defaults/certbot-auto -h && \
 update-rc.d -f nginx remove && \
 update-rc.d -f php5-fpm remove && \
 update-rc.d -f fail2ban remove
