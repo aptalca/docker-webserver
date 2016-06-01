@@ -65,6 +65,10 @@ ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
 ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 
+if [ ! -f "/config/donoteditthisfile.conf" ]; then
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
+fi
+
 if [ ! -z $SUBDOMAINS ]; then
   echo "SUBDOMAINS entered, processing"
   for job in $(echo $SUBDOMAINS | tr "," " "); do
@@ -77,14 +81,13 @@ else
   echo -e "URL=\"$URL\"" > /defaults/domains.conf
 fi
 
-if [ ! -f "/config/donoteditthisfile.conf" ]; then
+. /config/donoteditthisfile.conf
+if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
+  echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
+  /default/certbot-auto revoke --cert-path /config/keys/fullchain.pem
+  rm -rf /config/etc
   echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
-  echo "New sub/domains entered, processing"
-else
-  . /config/donoteditthisfile.conf
-  if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
-  echo "Different sub/domains entered. Revoking existing certificate, and an updated one will be created"
-  
+fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
