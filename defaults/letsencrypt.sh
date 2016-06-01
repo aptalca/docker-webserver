@@ -9,7 +9,7 @@ cd /defaults
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
 echo "letting the script update itself; help info may be displayed, you can ignore that :-)"
-./letsencrypt-auto --help
+./certbot-auto --help
 echo "deciding whether to renew the cert(s)"
 if [ -f "/config/keys/fullchain.pem" ]; then
   EXP=$(date -d "`openssl x509 -in /config/keys/fullchain.pem -text -noout|grep "Not After"|cut -c 25-`" +%s)
@@ -27,7 +27,7 @@ fi
 echo "Temporarily stopping Nginx"
 service nginx stop
 echo "Generating/Renewing certificate"
-./letsencrypt-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --rsa-key-size 4096 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
+./certbot-auto certonly --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --rsa-key-size 4096 --email $EMAIL --agree-tos -d $URL $SUBDOMAINS2
 chown -R nobody:users /config
 echo "Restarting web server"
 service nginx start
