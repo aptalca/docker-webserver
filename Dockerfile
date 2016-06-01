@@ -45,7 +45,6 @@ chmod +x /defaults/letsencrypt.sh && \
 chmod +x /defaults/certbot-auto && \
 chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
-/defaults/certbot-auto --non-interactive && \
 update-rc.d -f nginx remove && \
 update-rc.d -f php5-fpm remove && \
 update-rc.d -f fail2ban remove
