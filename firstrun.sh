@@ -84,7 +84,7 @@ fi
 . /config/donoteditthisfile.conf
 if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
   echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
-  /default/certbot-auto revoke --non-interactive --cert-path /config/keys/fullchain.pem
+  /defaults/certbot-auto revoke --non-interactive --cert-path /config/keys/fullchain.pem
   rm -rf /config/etc
   mkdir -p /config/etc/letsencrypt
   echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
