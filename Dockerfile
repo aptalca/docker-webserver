@@ -44,6 +44,7 @@ RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
 chmod +x /defaults/certbot-auto && \
 chmod +x /etc/service/*/run && \
+/defaults/certbot-auto -n -h && \
 crontab /defaults/letsencryptcron.conf && \
 update-rc.d -f nginx remove && \
 update-rc.d -f php5-fpm remove && \
