@@ -43,6 +43,7 @@ docker run -d \
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-06-03 - Added ability to change url and subdomains (container will automatically recognize changes to the variables upon start, and will update the cert accordingly) - Updated nginx to 1.10.1 - Switched to using certbot, the new official letsencrypt client maintained by EFF
 - 2016-05-06 - Updated nginx to 1.10.0 - Updated phusion baseimage to 18
 - 2016-04-16 - Fixed bug with detecting fail2ban.sock, which prevented fail2ban start
 - 2016-04-12 - Many changes under the hood to streamline - new/renewed certs will be 4096 bits - added option for 4096 bit dhparams - no more git, only uses the single letsencrypt-auto script - all environment variables match (bash, init and cron) - fixed bug affecting multiple subdomains - finally fixed php (may have to change your site config to use "fastcgi_pass unix:/var/run/php5-fpm.sock;" as in here: https://github.com/aptalca/docker-webserver/blob/master/defaults/default ) and delete your nginx-fpm.conf file and restart
