@@ -65,6 +65,10 @@ ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
 ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
 
+if [ ! -f "/config/donoteditthisfile.conf" ]; then
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
+fi
+
 if [ ! -z $SUBDOMAINS ]; then
   echo "SUBDOMAINS entered, processing"
   for job in $(echo $SUBDOMAINS | tr "," " "); do
@@ -75,6 +79,15 @@ if [ ! -z $SUBDOMAINS ]; then
 else
   echo "No subdomains defined"
   echo -e "URL=\"$URL\"" > /defaults/domains.conf
+fi
+
+. /config/donoteditthisfile.conf
+if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
+  echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
+  /defaults/certbot-auto revoke --non-interactive --cert-path /config/keys/fullchain.pem
+  rm -rf /config/etc
+  mkdir -p /config/etc/letsencrypt
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
