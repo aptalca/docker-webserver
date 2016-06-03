@@ -5,6 +5,8 @@ echo "<------------------------------------------------->"
 echo "cronjob running at "$(date)
 export HOME="/root"
 cd /defaults
+echo "Updating certbot script. It will display help info, which you can ignore"
+./certbot-auto -n -h
 . domains.conf
 echo "URL is" $URL
 echo "Subdomains are" $SUBDOMAINS
