@@ -46,6 +46,7 @@ chmod +x /defaults/certbot-auto && \
 chmod +x /etc/service/*/run && \
 /defaults/certbot-auto -n -h && \
 cp /defaults/nginxrotate /etc/logrotate.d/nginx && \
+cp /defaults/lerotate /etc/logrotate.d/letsencrypt && \
 crontab /defaults/letsencryptcron.conf && \
 update-rc.d -f nginx remove && \
 update-rc.d -f php5-fpm remove && \
