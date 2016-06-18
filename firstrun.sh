@@ -99,6 +99,7 @@ else
 fi
 
 chown -R nobody:users /config
+chmod -R go-w /config/log
 /defaults/letsencrypt.sh
 service php5-fpm start
 service nginx start
