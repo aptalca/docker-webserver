@@ -10,7 +10,7 @@ if [[ $(cat /etc/timezone) != $TZ ]] ; then
   sed -i -e "s#;date.timezone.*#date.timezone = ${TZ}#g" /etc/php5/cli/php.ini
 fi
 
-mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/etc/letsencrypt
+mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/log/letsencrypt /config/etc/letsencrypt
 
 if [ ! -f "/config/nginx/nginx.conf" ]; then
   echo "Copying the default nginx.conf"
