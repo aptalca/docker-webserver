@@ -10,7 +10,7 @@ if [[ $(cat /etc/timezone) != $TZ ]] ; then
   sed -i -e "s#;date.timezone.*#date.timezone = ${TZ}#g" /etc/php5/cli/php.ini
 fi
 
-mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/etc/letsencrypt
+mkdir -p /config/nginx/site-confs /config/www /config/log/nginx /config/log/letsencrypt /config/etc/letsencrypt
 
 if [ ! -f "/config/nginx/nginx.conf" ]; then
   echo "Copying the default nginx.conf"
@@ -75,10 +75,10 @@ if [ ! -z $SUBDOMAINS ]; then
     export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
   echo "Sub-domains processed are:" $SUBDOMAINS2
-  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\"" > /defaults/domains.conf
+  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
 else
   echo "No subdomains defined"
-  echo -e "URL=\"$URL\"" > /defaults/domains.conf
+  echo -e "URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
 fi
 
 . /config/donoteditthisfile.conf
@@ -99,6 +99,7 @@ else
 fi
 
 chown -R nobody:users /config
+chmod -R go-w /config/log
 /defaults/letsencrypt.sh
 service php5-fpm start
 service nginx start
