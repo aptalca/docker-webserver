@@ -2,6 +2,7 @@
  weekly
  rotate 52
  compress
+ delaycompress
   missingok
   notifempty
   sharedscripts
