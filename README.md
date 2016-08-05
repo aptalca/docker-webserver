@@ -40,12 +40,13 @@ docker run -d \
 - NOTE: PHP is finally fixed. Switched to using `unix:/var/run/php5-fpm.sock`. If you're updating an existing install (from prior to the 2016-04-12 build), delete your nginx-fpm.conf file, modify your default site config to utilize `unix:/var/run/php5-fpm.sock` instead of `127.0.0.1:9000` (as in here: https://github.com/aptalca/docker-webserver/blob/master/defaults/default ) and restart the container
 - OPTIONAL: If you'd like to generate a cert only for subdomains and not for the url (for instance a cert that covers mail.url.com and ftp.url.com but not url.com), include the following parameter in your run command: `-e ONLY_SUBDOMAINS="true"`
 - NOTE: This container recognizes any changes to the parameters entered. If there are changes to the url or domains, it will attempt to revoke the existing certs and generate new ones. Keep in mind that if you change them too many times, letsencrypt will throttle requests and you may be denied new certs for a period of time. Check the logs for suspected throttling.
+- NOTE: New version automatically creates a pfx key file with every renewal, which you can use for applications such as Emby
 
   
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
-- 2016-08-05 - Added ability to generate certs ONLY for subdomains, without the url - Greatly simplified the cert renewal process - Updated php
+- 2016-08-05 - Added ability to generate certs ONLY for subdomains, without the url - Greatly simplified the cert renewal process - Updated php - Added auto generated pfx private key
 - 2016-06-18 - Log rotation fixed - Letsencrypt log moved to its own folder - Fixed missing e-mail paramater when renewing through cron
 - 2016-06-03 - Added ability to change url and subdomains (container will automatically recognize changes to the variables upon start, and will update the cert accordingly) - Updated nginx to 1.10.1 - Switched to using certbot, the new official letsencrypt client maintained by EFF
 - 2016-05-06 - Updated nginx to 1.10.0 - Updated phusion baseimage to 18
