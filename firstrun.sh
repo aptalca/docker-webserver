@@ -122,6 +122,8 @@ chmod -R go-w /config/log
 if [ ! -f "/config/keys/fullchain.pem" ]; then
   echo "Generating new certificate"
   ./certbot-auto certonly --non-interactive --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --rsa-key-size 4096 --email $EMAIL --agree-tos $URLS
+  cd /config/keys
+  openssl pkcs12 -export -out privkey.pfx -inkey privkey.pem -in cert.pem -certfile chain.pem -passout pass:
 else
   cd /defaults
   ./letsencrypt.sh
