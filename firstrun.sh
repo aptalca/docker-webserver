@@ -81,24 +81,20 @@ if [ ! -z $SUBDOMAINS ]; then
   done
   if [ "$ONLY_SUBDOMAINS" = true ]; then
     URLS="$SUBDOMAINS2"
-    echo "Only subdomains, no URL"
+    echo "Only subdomains, no URL in cert"
   else
     URLS="-d $URL $SUBDOMAINS2"
   fi
   echo "Sub-domains processed are:" $SUBDOMAINS2
-  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
 else
   echo "No subdomains defined"
-  echo -e "URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
   URLS="-d $URL"
 fi
 
 . /config/donoteditthisfile.conf
-
 if [ -z $ORIGONLY_SUBDOMAINS ]; then
   export ORIGONLY_SUBDOMAINS="false"
 fi
-
 if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ] || [ ! $ONLY_SUBDOMAINS = $ORIGONLY_SUBDOMAINS ]; then
   echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
   if [ "$ORIGONLY_SUBDOMAINS" = "true" ]; then
