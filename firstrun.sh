@@ -71,7 +71,7 @@ else
 fi
 
 if [ ! -f "/config/donoteditthisfile.conf" ]; then
-  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\"" > /config/donoteditthisfile.conf
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 if [ ! -z $SUBDOMAINS ]; then
@@ -95,6 +95,10 @@ fi
 if [ -z $ORIGONLY_SUBDOMAINS ]; then
   export ORIGONLY_SUBDOMAINS="false"
 fi
+if [ -z $ORIGDHLEVEL ]; then
+  export ORIGDHLEVEL=$DHLEVEL
+fi
+echo -e "ORIGURL=\"$ORIGURL\" ORIGSUBDOMAINS=\"$ORIGSUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ORIGONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$ORIGDHLEVEL\"" > /config/donoteditthisfile.conf
 if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ] || [ ! $ONLY_SUBDOMAINS = $ORIGONLY_SUBDOMAINS ]; then
   echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
   if [ "$ORIGONLY_SUBDOMAINS" = "true" ]; then
@@ -105,7 +109,7 @@ if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ] || [ ! $ONLY_SUB
   fi
   rm -rf /config/etc
   mkdir -p /config/etc/letsencrypt
-  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\"" > /config/donoteditthisfile.conf
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
@@ -114,6 +118,14 @@ if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "DH parameters successfully created - " $DHLEVEL "bits"
 else
   echo "Using existing DH parameters"
+fi
+
+if [ ! $DHLEVEL = $ORIGDHLEVEL ]; then
+  rm -rf /config/nginx/dhparams.pem
+  echo "DH parameters bit setting changed. Creating new parameters. This may take a very long time. There will be another message once this process is completed"
+  openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
+  echo "DH parameters successfully created - " $DHLEVEL "bits"
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 chown -R nobody:users /config
