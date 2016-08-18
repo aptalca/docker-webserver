@@ -117,7 +117,7 @@ if [ ! -f "/config/nginx/dhparams.pem" ]; then
   openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
   echo "DH parameters successfully created - " $DHLEVEL "bits"
 else
-  echo "Using existing DH parameters"
+  echo $ORIGDHLEVEL "bit DH parameters present"
 fi
 
 if [ ! $DHLEVEL = $ORIGDHLEVEL ]; then
