@@ -8,6 +8,7 @@ On unRaid, install from the Community Applications and enter the app folder loca
 - Make sure that the port 443 in the container is accessible from the outside of your lan. It is OK to map container's port 443 to another port on the host (ie 943) as long as your router will forward port 443 from the outside to port 943 on the host and it will end up at port 443 in the container. If this is confusing, just leave 443 mapped to 443 and forward port 443 on your router to your unraid IP.
 - Prior to SSL certificate creation, letsencrypt creates a temporary webserver and checks to see if it is accessible through the domain url provided for validation. Make sure that your server is reachable through your.domain.url:443 and that port 443 is forwarded on your router to the container's port 443 prior to running this docker. Otherwise letsencrypt validation will fail, and no certificates will be generated.
 - If you prefer your dhparams to be 4096 bits (default is 2048), add an environment variable under advanced view `DHLEVEL` that equals `4096`
+- If you prefer to get a certificate only for subdomains and not the url (for instance a cert that covers mail.url.com and ftp.url.com but not url.com), add an environment variable under advanced view `ONLY_SUBDOMAINS` that equals `true`
 
 
 #### Install On Other Platforms (like Ubuntu or Synology 5.2 DSM, etc.):
@@ -38,11 +39,15 @@ docker run -d \
 - Fail2ban is extremely useful for preventing DDOS attacks or brute force methods that attempt to thwart htpasswd security. Default implementation includes blocking unsuccessful attempts at htpasswd based authentication. You can add more filters by modifying the `/config/nginx/jail.local` file and dropping the filter files in the `/config/nginx/fail2ban-filters` folder. Don't forget to restart the container afterwards.
 - OPTIONAL: If you prefer your dhparams to be 4096 bits (default is 2048), add the following to your run command: `-e DHLEVEL="4096"`
 - NOTE: PHP is finally fixed. Switched to using `unix:/var/run/php5-fpm.sock`. If you're updating an existing install (from prior to the 2016-04-12 build), delete your nginx-fpm.conf file, modify your default site config to utilize `unix:/var/run/php5-fpm.sock` instead of `127.0.0.1:9000` (as in here: https://github.com/aptalca/docker-webserver/blob/master/defaults/default ) and restart the container
+- OPTIONAL: If you'd like to generate a cert only for subdomains and not for the url (for instance a cert that covers mail.url.com and ftp.url.com but not url.com), include the following parameter in your run command: `-e ONLY_SUBDOMAINS="true"`
+- NOTE: This container recognizes any changes to the parameters entered. If there are changes to the url or domains, it will attempt to revoke the existing certs and generate new ones. Keep in mind that if you change them too many times, letsencrypt will throttle requests and you may be denied new certs for a period of time. Check the logs for suspected throttling.
+- NOTE: New version automatically creates a pfx key file with every renewal, which you can use for applications such as Emby
 
   
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-08-19 - Added ability to generate certs ONLY for subdomains, without the url (many thanks to @stuwil for PR) - Greatly simplified the cert renewal process - Updated php - Added auto generated pfx private key - Added ability to change DH bit parameter without having to delete the existing file
 - 2016-06-18 - Log rotation fixed - Letsencrypt log moved to its own folder - Fixed missing e-mail paramater when renewing through cron
 - 2016-06-03 - Added ability to change url and subdomains (container will automatically recognize changes to the variables upon start, and will update the cert accordingly) - Updated nginx to 1.10.1 - Switched to using certbot, the new official letsencrypt client maintained by EFF
 - 2016-05-06 - Updated nginx to 1.10.0 - Updated phusion baseimage to 18

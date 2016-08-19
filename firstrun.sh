@@ -63,10 +63,15 @@ ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 rm -r /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
 rm /config/keys
-ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
+if [ "$ONLY_SUBDOMAINS" = "true" ]; then
+  DOMAIN="$(echo $SUBDOMAINS | tr ',' ' ' | awk '{print $1}')"."$URL"
+  ln -s /config/etc/letsencrypt/live/"$DOMAIN" /config/keys
+else
+  ln -s /config/etc/letsencrypt/live/"$URL" /config/keys
+fi
 
 if [ ! -f "/config/donoteditthisfile.conf" ]; then
-  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 if [ ! -z $SUBDOMAINS ]; then
@@ -74,20 +79,37 @@ if [ ! -z $SUBDOMAINS ]; then
   for job in $(echo $SUBDOMAINS | tr "," " "); do
     export SUBDOMAINS2="$SUBDOMAINS2 -d "$job"."$URL""
   done
+  if [ "$ONLY_SUBDOMAINS" = true ]; then
+    URLS="$SUBDOMAINS2"
+    echo "Only subdomains, no URL in cert"
+  else
+    URLS="-d $URL $SUBDOMAINS2"
+  fi
   echo "Sub-domains processed are:" $SUBDOMAINS2
-  echo -e "SUBDOMAINS2=\"$SUBDOMAINS2\" URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
 else
   echo "No subdomains defined"
-  echo -e "URL=\"$URL\" EMAIL=\"$EMAIL\"" > /defaults/domains.conf
+  URLS="-d $URL"
 fi
 
 . /config/donoteditthisfile.conf
-if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ]; then
+if [ -z $ORIGONLY_SUBDOMAINS ]; then
+  export ORIGONLY_SUBDOMAINS="false"
+fi
+if [ -z $ORIGDHLEVEL ]; then
+  export ORIGDHLEVEL=$DHLEVEL
+fi
+echo -e "ORIGURL=\"$ORIGURL\" ORIGSUBDOMAINS=\"$ORIGSUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ORIGONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$ORIGDHLEVEL\"" > /config/donoteditthisfile.conf
+if [ ! $URL = $ORIGURL ] || [ ! $SUBDOMAINS = $ORIGSUBDOMAINS ] || [ ! $ONLY_SUBDOMAINS = $ORIGONLY_SUBDOMAINS ]; then
   echo "Different sub/domains entered than what was used before. Revoking and deleting existing certificate, and an updated one will be created"
-  /defaults/certbot-auto revoke --non-interactive --cert-path /config/keys/fullchain.pem
+  if [ "$ORIGONLY_SUBDOMAINS" = "true" ]; then
+    ORIGDOMAIN="$(echo $ORIGSUBDOMAINS | tr ',' ' ' | awk '{print $1}')"."$ORIGURL"
+    /defaults/certbot-auto revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGDOMAIN"/fullchain.pem
+  else
+    /defaults/certbot-auto revoke --non-interactive --cert-path /config/etc/letsencrypt/live/"$ORIGURL"/fullchain.pem
+  fi
   rm -rf /config/etc
   mkdir -p /config/etc/letsencrypt
-  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\"" > /config/donoteditthisfile.conf
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
@@ -95,12 +117,31 @@ if [ ! -f "/config/nginx/dhparams.pem" ]; then
   openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
   echo "DH parameters successfully created - " $DHLEVEL "bits"
 else
-  echo "Using existing DH parameters"
+  echo $ORIGDHLEVEL "bit DH parameters present"
+fi
+
+if [ ! $DHLEVEL = $ORIGDHLEVEL ]; then
+  rm -rf /config/nginx/dhparams.pem
+  echo "DH parameters bit setting changed. Creating new parameters. This may take a very long time. There will be another message once this process is completed"
+  openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
+  echo "DH parameters successfully created - " $DHLEVEL "bits"
+  echo -e "ORIGURL=\"$URL\" ORIGSUBDOMAINS=\"$SUBDOMAINS\" ORIGONLY_SUBDOMAINS=\"$ONLY_SUBDOMAINS\" ORIGDHLEVEL=\"$DHLEVEL\"" > /config/donoteditthisfile.conf
 fi
 
 chown -R nobody:users /config
 chmod -R go-w /config/log
-/defaults/letsencrypt.sh
+
+if [ ! -f "/config/keys/fullchain.pem" ]; then
+  echo "Generating new certificate"
+  cd /defaults
+  ./certbot-auto certonly --non-interactive --renew-by-default --standalone --standalone-supported-challenges tls-sni-01 --rsa-key-size 4096 --email $EMAIL --agree-tos $URLS
+  cd /config/keys
+  openssl pkcs12 -export -out privkey.pfx -inkey privkey.pem -in cert.pem -certfile chain.pem -passout pass:
+else
+  cd /defaults
+  ./letsencrypt.sh
+fi
+
 service php5-fpm start
 service nginx start
 if [ -S "/var/run/fail2ban/fail2ban.sock" ]; then
