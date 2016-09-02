@@ -9,7 +9,7 @@ EXPOSE 80 443
 ENV HOME="/root" LC_ALL="C.UTF-8" LANG="en_US.UTF-8" LANGUAGE="en_US.UTF-8" DHLEVEL="2048" ONLY_SUBDOMAINS="false"
 
 RUN export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive && \
-add-apt-repository ppa:nginx/stable && \
+add-apt-repository ppa:ondrej/nginx && \
 apt-get update && \
 apt-get install -y \
 git \
