@@ -47,6 +47,7 @@ docker run -d \
 You can access your webserver at `https://subdomain.yourdomain.url/`  
   
 #### Changelog: 
+- 2016-09-22 - Fixed deletion of symlink after failed install
 - 2016-08-19 - Added ability to generate certs ONLY for subdomains, without the url (many thanks to @stuwil for PR) - Greatly simplified the cert renewal process - Updated php - Added auto generated pfx private key - Added ability to change DH bit parameter without having to delete the existing file
 - 2016-06-18 - Log rotation fixed - Letsencrypt log moved to its own folder - Fixed missing e-mail paramater when renewing through cron
 - 2016-06-03 - Added ability to change url and subdomains (container will automatically recognize changes to the variables upon start, and will update the cert accordingly) - Updated nginx to 1.10.1 - Switched to using certbot, the new official letsencrypt client maintained by EFF
