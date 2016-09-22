@@ -60,9 +60,9 @@ cp /config/nginx/fail2ban-filters/* /etc/fail2ban/filter.d/
 rm -f /etc/nginx/nginx.conf
 ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
-rm -r /etc/letsencrypt
+rm -rf /etc/letsencrypt
 ln -s /config/etc/letsencrypt /etc/letsencrypt
-rm /config/keys
+rm -rf /config/keys
 if [ "$ONLY_SUBDOMAINS" = "true" ]; then
   DOMAIN="$(echo $SUBDOMAINS | tr ',' ' ' | awk '{print $1}')"."$URL"
   ln -s /config/etc/letsencrypt/live/"$DOMAIN" /config/keys
