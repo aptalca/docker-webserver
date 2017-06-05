@@ -47,10 +47,7 @@ ADD services/ /etc/service/
 ADD defaults/ /defaults/
 ADD https://dl.eff.org/certbot-auto /defaults/certbot-auto
 
-RUN chmod +x /etc/my_init.d/firstrun.sh && \
-  chmod +x /defaults/letsencrypt.sh && \
-  chmod +x /defaults/certbot-auto && \
-  chmod +x /etc/service/*/run && \
+RUN chmod +x /defaults/certbot-auto && \
   /defaults/certbot-auto -n -h && \
   cp /defaults/nginxrotate /etc/logrotate.d/nginx && \
   cp /defaults/lerotate /etc/logrotate.d/letsencrypt && \
