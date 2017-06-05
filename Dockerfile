@@ -18,7 +18,7 @@ ENV HOME="/root" \
 RUN set -x && \
   add-apt-repository ppa:nginx/stable && \
   apt-get update && \
-  apt-get install -y \
+  apt-get install -y --no-install-recommends \
   git \
   nano \
   nginx \
@@ -54,4 +54,5 @@ RUN chmod +x /defaults/certbot-auto && \
   crontab /defaults/letsencryptcron.conf && \
   update-rc.d -f nginx remove && \
   update-rc.d -f php5-fpm remove && \
-  update-rc.d -f fail2ban remove
+  update-rc.d -f fail2ban remove && \
+  apt-get autoclean
