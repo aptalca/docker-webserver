@@ -1,3 +1,6 @@
+## This image has been deprecated. Please use the new image here: https://hub.docker.com/r/linuxserver/letsencrypt/
+It is based on alpine, leaner, meaner and more up to date
+
 ### Nginx-Letsencrypt
 
 This container sets up an Nginx webserver with a built-in letsencrypt client that automates free SSL server certificate generation and renewal processes.
